@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { fetchAnimeById, fetchEpisodesByAnimeId } from '../services/apiService';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import tw from 'twrnc';
 import ProgressBar from '../components/ProgressBar';
 import EpisodeCard from '../components/EpisodeCard';
@@ -9,10 +9,11 @@ import { useDatabase } from '../hooks/useDatabase';
 
 export default function AnimeDetails() {
     const { id } = useLocalSearchParams();
+    const router = useRouter();
     const [anime, setAnime] = useState<any>(null);
     const [episodes, setEpisodes] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const { addToCollection, getWatchedEpisodes } = useDatabase();
+    const { addToCollection, getWatchedEpisodes, markEpisodeAsWatched } = useDatabase();
     const [watchedEpisodes, setWatchedEpisodes] = useState<string[]>([]);
 
     useEffect(() => {
@@ -34,6 +35,16 @@ export default function AnimeDetails() {
             await addToCollection(anime);
             alert('Ajouté à votre collection!');
         }
+    };
+
+    const handleToggleWatched = async (episode: any) => {
+        await markEpisodeAsWatched(episode.id, id as string, episode);
+        const updated = await getWatchedEpisodes(id as string);
+        setWatchedEpisodes(updated);
+    };
+
+    const handleEpisodePress = (episode: any) => {
+        router.push(`/anime/${id}/${episode.id}`);
     };
 
     if (loading || !anime) {
@@ -76,12 +87,16 @@ export default function AnimeDetails() {
 
             <Text style={tw`text-lg font-bold mb-2`}>Épisodes</Text>
             {episodes.map((episode) => (
-                <EpisodeCard
+                <TouchableOpacity
                     key={episode.id}
-                    episode={episode}
-                    isWatched={watchedEpisodes.includes(episode.id)}
-                    onToggleWatched={() => console.log('Toggle watched', episode.id)}
-                />
+                    onPress={() => handleEpisodePress(episode)}
+                >
+                    <EpisodeCard
+                        episode={episode}
+                        isWatched={watchedEpisodes.includes(episode.id)}
+                        onToggleWatched={() => handleToggleWatched(episode)}
+                    />
+                </TouchableOpacity>
             ))}
         </ScrollView>
     );

@@ -3,8 +3,10 @@
     "name": "AnimeCollect",
     "slug": "anime-collect",
     "scheme": "animecollect",
+    "version": "1.0.0",
+    "platforms": ["ios", "android"],
     "plugins": [
-      ["expo-router", {}],
+      "expo-router",
       ["expo-sqlite", {
         "iosDatabaseLocation": "Library/SQLiteDatabase"
       }]

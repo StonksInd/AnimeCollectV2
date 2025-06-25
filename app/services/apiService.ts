@@ -43,3 +43,28 @@ export const searchAnime = async (query: string) => {
     return [];
   }
 };
+
+export const fetchEpisodesByAnimeId = async (animeId: string) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/anime/${animeId}/episodes`, {
+      params: {
+        'page[limit]': 50,
+        'sort': 'number'
+      }
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error(`Error fetching episodes for anime ${animeId}:`, error);
+    return [];
+  }
+};
+
+export const fetchEpisodeById = async (episodeId: string) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/episodes/${episodeId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error(`Error fetching episode ${episodeId}:`, error);
+    return null;
+  }
+};
