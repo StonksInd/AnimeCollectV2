@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "AnimeCollect",
+    "slug": "anime-collect",
+    "scheme": "animecollect",
+    "plugins": [
+      ["expo-router", {}],
+      ["expo-sqlite", {
+        "iosDatabaseLocation": "Library/SQLiteDatabase"
+      }]
+    ]
+  }
+}

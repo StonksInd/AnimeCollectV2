@@ -1,8 +1,10 @@
 import { registerRootComponent } from 'expo';
+import { ExpoRoot } from 'expo-router';
+import 'expo-router/entry';
 
-import App from './App';
+const ctx = require.context('./app');
+export function App() {
+    return <ExpoRoot context={ctx} />;
+}
 
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in Expo Go or in a native build,
-// the environment is set up appropriately
 registerRootComponent(App);
